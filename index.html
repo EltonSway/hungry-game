@@ -109,13 +109,18 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
 @keyframes pulse{50%{opacity:.5}}
 #wt{font-family:var(--disp);font-size:19px;font-weight:900}
 #wt small{font-size:11px;color:var(--dim);font-weight:500}
+#lives{font-size:13px;letter-spacing:2px;padding:8px 10px;color:#ff3d6e}
+#lives.low{animation:pulse .6s infinite}
+#stars{font-size:13px;color:#ffb100;letter-spacing:1px;padding:8px 10px}
+#stars.max{animation:pulse .7s infinite}
 #exit{pointer-events:auto;border:0;background:var(--card);border-radius:14px;width:38px;height:38px;
   font-size:17px;box-shadow:0 4px 0 #1b133014}
-#tier{position:fixed;left:12px;top:calc(env(safe-area-inset-top) + 58px);z-index:4;background:var(--card);
-  border-radius:16px;padding:8px 12px;box-shadow:0 4px 0 #1b133014;font-size:12px;font-weight:700;display:none}
-#tier b{display:block;font-family:var(--disp);font-size:14px}
-#tier .nx{color:var(--dim);font-weight:600;font-size:11px;margin-top:3px}
-#tier .pbar{height:5px;border-radius:3px;background:#1b133014;margin-top:5px;width:120px;overflow:hidden}
+#tier{position:fixed;left:12px;top:calc(env(safe-area-inset-top) + 56px);z-index:4;background:var(--card);
+  border-radius:14px;padding:6px 11px;box-shadow:0 3px 0 #1b133014;font-size:11px;font-weight:700;display:none;
+  opacity:.94}
+#tier b{font-family:var(--disp);font-size:12px;margin-right:6px}
+#tier .nx{color:var(--dim);font-weight:600;font-size:11px}
+#tier .pbar{height:4px;border-radius:2px;background:#1b133014;margin-top:5px;width:132px;overflow:hidden}
 #tier .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--acid))}
 #combo{position:fixed;left:0;right:0;top:22vh;text-align:center;z-index:4;pointer-events:none;
   font-family:var(--disp);font-weight:900;font-size:clamp(30px,10vw,54px);color:#fff;opacity:0;
@@ -125,8 +130,8 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
 #combo.pop{animation:cpop .55s ease-out}
 @keyframes cpop{0%{opacity:0;transform:scale(.5) rotate(-8deg)}28%{opacity:1;transform:scale(1.16) rotate(4deg)}100%{opacity:0;transform:scale(1.02)}}
 #buffs{position:fixed;left:12px;bottom:calc(env(safe-area-inset-bottom) + 12px);z-index:4;display:flex;gap:7px}
-#mini{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 58px);width:78px;height:78px;z-index:4;
-  border-radius:16px;background:#ffffffcc;box-shadow:0 4px 0 #1b133014;display:none}
+#mini{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 56px);width:64px;height:64px;z-index:4;
+  border-radius:14px;background:#ffffffb0;box-shadow:0 3px 0 #1b133014;display:none;opacity:.9}
 #dash{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom) + 14px);z-index:6;display:none;
   width:82px;height:82px;border:0;border-radius:50%;font-size:32px;font-family:var(--disp);
   background:radial-gradient(circle at 50% 34%,#ff8a5c,#ff3d6e);color:#fff;
@@ -146,6 +151,8 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
 #rush{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .4s;
   background:radial-gradient(120% 80% at 50% 50%,#0000 45%,#ffd60a55 100%)}
 
+#res.busted{background:linear-gradient(160deg,#3a4560,#5a6c8a 45%,#2b3346)}
+#res.busted .big{text-shadow:0 5px 0 #1b2233,0 14px 34px #1b133055}
 #res{background:linear-gradient(160deg,#ffd60a,#ff9f1c 45%,#ff3d6e);align-items:center;justify-content:center;
   padding:24px 18px;text-align:center;gap:4px}
 #res .t{font-family:var(--disp);font-size:12px;letter-spacing:.3em;color:#ffffffcc;text-transform:uppercase}
@@ -210,23 +217,25 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
   <div class="hrow">
     <div id="clock">1:40</div>
     <div class="pill"><span id="wt">62<small> кг</small></span></div>
+    <div class="pill" id="lives">❤️❤️❤️</div>
+    <div class="pill" id="stars">★</div>
     <div class="spacer"></div>
     <button id="exit">✕</button>
   </div>
 </div>
-<div id="tier"><b id="tierName">мелочь</b><span id="tierNow">ем: киоски, деревья</span>
-  <div class="pbar"><i id="tierBar"></i></div><div class="nx" id="tierNext">до машин: 8 кг</div></div>
+<div id="tier"><b id="tierName">мелочь</b><span class="nx" id="tierNext">до тачек: 8 кг</span>
+  <div class="pbar"><i id="tierBar"></i></div></div>
 <div id="combo"></div>
 <div id="buffs"></div>
-<canvas id="mini" width="78" height="78"></canvas>
+<canvas id="mini" width="64" height="64"></canvas>
 <div id="handhint">🙌 удобнее <b>двумя руками</b><br><span>левая ведёт · правая жмёт 💨</span></div>
 <button id="dash">💨</button>
 <div id="tip"></div>
 
 <div class="screen" id="res">
-  <div class="t">сожрал</div>
+  <div class="t" id="resTop">сожрал</div>
   <div class="big" id="resKg">0</div>
-  <div class="unit">килограммов</div>
+  <div class="unit" id="resUnit">килограммов</div>
   <div class="rank" id="resRank"></div>
   <div class="newrec" id="resRec" style="visibility:hidden">новый рекорд!</div>
   <div class="stats">
@@ -4143,10 +4152,14 @@ const UPS = [
   { k:"appetite", ic:"🍽", name:"Батин аппетит", desc:"больше кг с каждой цели", max:5, cost:l=>80+l*90 },
 ];
 const SKINS = [
-  { name:"Обычный",  ic:"😋", cost:0,    glow:0xffd60a },
-  { name:"Золотой",  ic:"👑", cost:600,  glow:0xffa600 },
-  { name:"Неоновый", ic:"⚡", cost:1500, glow:0x00d3a7 },
-  { name:"Адский",   ic:"🔥", cost:3000, glow:0xff3d6e },
+  { name:"Обычный",  ic:"😋", cost:0,    glow:0xffd60a, tint:0xffffff, emis:0x000000, ei:0,
+    metal:.0,  rough:.75, ring:0,        fire:false, desc:"как есть" },
+  { name:"Золотой",  ic:"👑", cost:600,  glow:0xffc300, tint:0xffdf9e, emis:0x4a3000, ei:.5,
+    metal:.5,  rough:.3,  ring:0xffd700, fire:false, desc:"золотой блеск и кольцо" },
+  { name:"Неоновый", ic:"⚡", cost:1500, glow:0x00ffd0, tint:0x8ff7e6, emis:0x006b56, ei:.75,
+    metal:.25, rough:.4,  ring:0x00ffd0, fire:false, desc:"неоновое свечение" },
+  { name:"Адский",   ic:"🔥", cost:3000, glow:0xff3d00, tint:0xffa285, emis:0x6e1000, ei:.8,
+    metal:.35, rough:.35, ring:0xff4500, fire:true, desc:"горит и сыплет искры" },
 ];
 const ZONES = [
   { name:"Спальник",   ic:"🏢", cost:0,    mult:1,    cops:2, sky:["#8fd4ff","#dff4ff"],
@@ -4160,7 +4173,7 @@ const lvlOf = xp => 1 + Math.floor(Math.sqrt(xp/60));
 
 /* ================== мир ================== */
 const TINY = location.search.indexOf("tiny=1")>=0;
-const COLS=TINY?3:5, ROWS=TINY?3:5, BLOCK=300, ROAD=118;
+const COLS=TINY?3:7, ROWS=TINY?3:7, BLOCK=300, ROAD=118;
 const W = COLS*(BLOCK+ROAD)+ROAD, H = ROWS*(BLOCK+ROAD)+ROAD;
 const ROUND = 100, RUSH = 15, R0 = 15;
 
@@ -4172,6 +4185,14 @@ const TIERS = [
 ];
 const tierOf = r => { let t=0; for(let i=0;i<TIERS.length;i++) if(r>=TIERS[i].r) t=i; return t; };
 
+const WANTED = [
+  { kg:0,     name:"ППС",       hint:"патрули на районе" },
+  { kg:900,   name:"ОБЛАВА",    hint:"патрулей стало больше" },
+  { kg:2600,  name:"ВЕРТОЛЁТ",  hint:"с воздуха кидают мешки" },
+  { kg:6500,  name:"ТАНК",      hint:"по тебе стреляют" },
+  { kg:14000, name:"НЛО",       hint:"тобой занялись сверху" },
+];
+const starsOf = kg => { let s=0; for(let i=0;i<WANTED.length;i++) if(kg>=WANTED[i].kg) s=i; return s; };
 const MEMES = ["ЖОР!","ЗАЛЕТЕЛО","ЕЩЁ ОДНУ","АМИНЬ 🙏","БАТЯ В ДЕЛЕ","НЕ НАЕЛСЯ","ГДЕ МЯСО?",
                "ПЛОВ-МАШИНА","ПО АКЦИИ","ДОБАВКИ!"];
 const RANKS = [[800,"Поел как воробей 🐦"],[2000,"Норм пацан 🙂"],[4000,"Плов-машина 🥘"],
@@ -4356,8 +4377,11 @@ const ASSETS = [
   ["com_g","assets/com/bg.glb"],["com_h","assets/com/bh.glb"],["com_k","assets/com/bk.glb"],
   ["default","assets/nat/default.glb"],["oak","assets/nat/oak.glb"],["fat","assets/nat/fat.glb"],
   ["pineRoundA","assets/nat/pineRoundA.glb"],["palmTall","assets/nat/palmTall.glb"],
+  ["ufo","assets/ufo/speederA.glb"],["ufo2","assets/ufo/miner.glb"],
   ["burger","assets/food/burger.glb"],["pizza","assets/food/pizza.glb"],["taco","assets/food/taco.glb"],
   ["soda","assets/food/soda.glb"],["fries","assets/food/fries.glb"],
+  ["plov","assets/food/pan-stew.glb"],["samsa","assets/food/mincemeat-pie.glb"],
+  ["shashlik","assets/food/skewer.glb"],
 ];
 function normalize(obj,targetH,byMax){
   const box=new THREE.Box3().setFromObject(obj), size=box.getSize(new THREE.Vector3());
@@ -4452,7 +4476,24 @@ const glowTex=cvTex(128,128,g=>{
 const halo=new THREE.Mesh(new THREE.PlaneGeometry(1,1), new THREE.MeshBasicMaterial({
   map:glowTex, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false, opacity:.4 }));
 halo.rotation.x=-Math.PI/2; halo.position.y=.7; player.add(halo);
+const skinRing=new THREE.Mesh(new THREE.TorusGeometry(1,.075,10,40),
+  new THREE.MeshBasicMaterial({ color:0xffd700 }));
+skinRing.rotation.x=Math.PI/2.6; skinRing.visible=false; player.add(skinRing);
 scene.add(player); drawHead();
+
+function applySkin(){
+  const s=SKINS[S.skin];
+  body.material.color.setHex(s.tint);
+  body.material.emissive.setHex(s.emis);
+  body.material.emissiveIntensity=s.ei;
+  body.material.metalness=s.metal;
+  body.material.roughness=s.rough;
+  body.material.needsUpdate=true;
+  halo.material.color.setHex(s.glow);
+  halo.material.opacity = s.ring ? .6 : .4;
+  skinRing.visible=!!s.ring;
+  if(s.ring) skinRing.material.color.setHex(s.ring);
+}
 
 /* ================== объекты ================== */
 const props=[], cops=[], spots=[];
@@ -4515,11 +4556,14 @@ function buildWorld(z){
 }
 
 const FOODS = [
-  { key:"pizza",  name:"Додо",             col:0xff6a00, kg:16, area:240 },
-  { key:"burger", name:"Вкусно — и точка", col:0x00b055, kg:14, area:210 },
-  { key:"taco",   name:"Чайхона №1",       col:0xe8a33d, kg:18, area:260 },
-  { key:"fries",  name:"Картошка фри",     col:0xffd60a, kg:12, area:180 },
-  { key:"soda",   name:"Газировка",        col:0x3aa8ff, kg:10, area:160 },
+  { key:"pizza",    name:"Додо",             col:0xff6a00, kg:16, area:240 },
+  { key:"burger",   name:"Вкусно — и точка", col:0x00b055, kg:14, area:210 },
+  { key:"plov",     name:"Чайхона №1",       col:0xe8a33d, kg:20, area:280 },
+  { key:"taco",     name:"Шаурмичка 24/7",   col:0xc23b22, kg:18, area:260 },
+  { key:"samsa",    name:"Самса у дороги",   col:0xd6a44a, kg:15, area:220 },
+  { key:"shashlik", name:"Шашлычка",         col:0x8b4a2f, kg:17, area:250 },
+  { key:"fries",    name:"Картошка фри",     col:0xffd60a, kg:12, area:180 },
+  { key:"soda",     name:"Газировка",        col:0x3aa8ff, kg:10, area:160 },
 ];
 function newSpot(){
   const g=new THREE.Group();
@@ -4574,6 +4618,84 @@ function placeCop(o){
   o.g.position.set(o.x,0,o.z); o.g.visible=true; o.stun=0; o.charge=0; o.atk=0; o.cd=rnd(1,3);
 }
 
+/* ---------- вертолёт, танк, НЛО ---------- */
+let heli=null, tank=null, ufo=null;
+const bombs=[], shells=[];
+
+function makeHeli(){
+  const g=new THREE.Group();
+  const bodyM=new THREE.MeshLambertMaterial({ color:0x2f3a4d });
+  const b=new THREE.Mesh(new THREE.BoxGeometry(34,16,18), bodyM); b.position.y=8; g.add(b);
+  const cab=new THREE.Mesh(new THREE.BoxGeometry(14,12,15),
+    new THREE.MeshLambertMaterial({ color:0x9fd8ff })); cab.position.set(15,9,0); g.add(cab);
+  const tail=new THREE.Mesh(new THREE.BoxGeometry(34,5,5), bodyM); tail.position.set(-30,10,0); g.add(tail);
+  const fin=new THREE.Mesh(new THREE.BoxGeometry(4,12,4), bodyM); fin.position.set(-45,15,0); g.add(fin);
+  const skid1=new THREE.Mesh(new THREE.BoxGeometry(30,2,2), bodyM); skid1.position.set(0,-1,7); g.add(skid1);
+  const skid2=skid1.clone(); skid2.position.z=-7; g.add(skid2);
+  const rotor=new THREE.Group();
+  for(let i=0;i<2;i++){
+    const bl=new THREE.Mesh(new THREE.BoxGeometry(74,1.4,6),
+      new THREE.MeshLambertMaterial({ color:0x1b2233 }));
+    bl.rotation.y=i*Math.PI/2; rotor.add(bl);
+  }
+  rotor.position.y=20; g.add(rotor);
+  const tr=new THREE.Mesh(new THREE.BoxGeometry(1.4,18,4),
+    new THREE.MeshLambertMaterial({ color:0x1b2233 })); tr.position.set(-45,14,3); g.add(tr);
+  scene.add(g); g.visible=false;
+  return { g, rotor, tailRotor:tr, x:0, z:0, ang:0, cd:3, alive:false };
+}
+function makeTank(){
+  const g=new THREE.Group();
+  const m=new THREE.MeshLambertMaterial({ color:0x5d6b4a });
+  const hull=new THREE.Mesh(new THREE.BoxGeometry(44,12,26), m); hull.position.y=11; g.add(hull);
+  const trackM=new THREE.MeshLambertMaterial({ color:0x2a2f26 });
+  [14,-14].forEach(z=>{
+    const t=new THREE.Mesh(new THREE.BoxGeometry(48,10,8), trackM); t.position.set(0,6,z); g.add(t);
+  });
+  const turret=new THREE.Group();
+  const tur=new THREE.Mesh(new THREE.BoxGeometry(24,10,20), m); tur.position.y=0; turret.add(tur);
+  const gun=new THREE.Mesh(new THREE.CylinderGeometry(2.2,2.2,30,8), trackM);
+  gun.rotation.z=Math.PI/2; gun.position.set(20,0,0); turret.add(gun);
+  turret.position.y=22; g.add(turret);
+  scene.add(g); g.visible=false;
+  return { g, turret, x:0, z:0, vx:0, vz:0, cd:3, alive:false };
+}
+function makeUfo(){
+  const g=inst("ufo",46);
+  const beam=new THREE.Mesh(new THREE.CylinderGeometry(3,26,120,14,1,true),
+    new THREE.MeshBasicMaterial({ color:0x8affd6, transparent:true, opacity:.22,
+      side:THREE.DoubleSide, depthWrite:false }));
+  beam.position.y=-60; g.add(beam);
+  scene.add(g); g.visible=false;
+  return { g, beam, x:0, z:0, cd:3, alive:false };
+}
+function newBomb(x,z,delay,laser){
+  const ring=new THREE.Mesh(new THREE.RingGeometry(34,44,26),
+    new THREE.MeshBasicMaterial({ color:0xff3d6e, transparent:true, opacity:.75,
+      side:THREE.DoubleSide, depthWrite:false }));
+  if(laser) ring.material.color.setHex(0x8affd6);
+  ring.rotation.x=-Math.PI/2; ring.position.set(x,1.2,z); scene.add(ring);
+  bombs.push({ ring, x, z, t:delay||1.3, laser:!!laser });
+}
+const meteors=[];
+function newMeteor(x,z){
+  const m=new THREE.Mesh(new THREE.IcosahedronGeometry(13,0),
+    new THREE.MeshLambertMaterial({ color:0x4a2f22, emissive:0xff4400, emissiveIntensity:.8, flatShading:true }));
+  m.position.set(x+rnd(-40,40), 620, z+rnd(-40,40)); scene.add(m);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(30,42,24),
+    new THREE.MeshBasicMaterial({ color:0xff7a00, transparent:true, opacity:.8,
+      side:THREE.DoubleSide, depthWrite:false }));
+  ring.rotation.x=-Math.PI/2; ring.position.set(x,1.4,z); scene.add(ring);
+  meteors.push({ m, ring, x, z, t:1.6 });
+}
+function newShell(x,z,tx,tz){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(4.5,10,8),
+    new THREE.MeshBasicMaterial({ color:0xffb100 }));
+  m.position.set(x,20,z); scene.add(m);
+  const l=Math.hypot(tx-x,tz-z)||1;
+  shells.push({ m, vx:(tx-x)/l*300, vz:(tz-z)/l*300, life:3 });
+}
+
 const bits=[];
 for(let i=0;i<90;i++){
   const m=new THREE.Mesh(new THREE.BoxGeometry(5,5,5), new THREE.MeshLambertMaterial({ color:0xffffff }));
@@ -4600,35 +4722,50 @@ function startGame(){
   G={ r:R0, kg:62, eaten:0, houses:0, t:ROUND, combo:0, comboT:0, bestCombo:1, mult:1,
       vx:0, vz:0, spd:1+S.up.speed*.11, app:(1+S.up.appetite*.25)*z.mult, over:false,
       camD:1, spin:0, chew:0, dash:0, dashCd:0, goldT:20, copT:32, inv:0, punch:0, tier:0,
-      zone:z, rush:false };
+      zone:z, rush:false, lives:5, maxLives:5, busted:false, stars:0, calm:0, atkCd:0, meteorT:8 };
   player.position.set(W/2,R0,H/2);
-  halo.material.color.setHex(SKINS[S.skin].glow);
+  applySkin();
   for(const o of spots){ o.alive=false; o.g.visible=false; }
   for(let i=0;i<26;i++) placeSpot(spots[i]||newSpot());
   for(const c of cops) c.g.visible=false;
+  if(!heli) heli=makeHeli();
+  if(!tank) tank=makeTank();
+  if(!ufo)  ufo=makeUfo();
+  [heli,tank,ufo].forEach(o=>{ o.alive=false; o.g.visible=false; });
+  while(bombs.length){ scene.remove(bombs[0].ring); bombs.shift(); }
+  while(shells.length){ scene.remove(shells[0].m); shells.shift(); }
+  while(meteors.length){ scene.remove(meteors[0].m); scene.remove(meteors[0].ring); meteors.shift(); }
   for(let i=0;i<z.cops;i++) placeCop(cops[i]||newCop());
   mode="playing";
   $("menu").classList.remove("on"); $("res").classList.remove("on");
   $("hud").classList.add("on"); mini.style.display="block"; $("dash").style.display="block";
   $("tier").style.display="block"; $("rush").style.opacity=0;
-  $("tip").innerHTML="веди пальцем слева · сначала ешь мелочь";
-  $("tip").style.display="block"; $("tip").style.opacity=1;
-  $("handhint").style.display="block"; $("handhint").style.opacity=1;
-  setTimeout(()=>{ $("tip").style.opacity=0; $("handhint").style.opacity=0; },6000);
-  setTimeout(()=>{ $("handhint").style.display="none"; },7000);
-  setWeight(); updTier(true);
+  if(!S.taught){                                   // подсказки показываем только новичку
+    $("tip").innerHTML="веди пальцем слева · сначала ешь мелочь";
+    $("tip").style.display="block"; $("tip").style.opacity=1;
+    $("handhint").style.display="block"; $("handhint").style.opacity=1;
+    setTimeout(()=>{ $("tip").style.opacity=0; $("handhint").style.opacity=0; },5500);
+    setTimeout(()=>{ $("handhint").style.display="none"; $("tip").style.display="none"; },6500);
+    S.taught=1; save();
+  } else { $("tip").style.display="none"; $("handhint").style.display="none"; }
+  setWeight(); setLives(); setStars(); updTier(true);
   SFX.ctx(); SFX.startMusic(); SFX.siren(true);
 }
 
 function endGame(){
   mode="result"; G.over=true;
   SFX.stopMusic(); SFX.sirenLevel(0); SFX.end();
+  const busted=G.busted;
+  $("res").classList.toggle("busted", busted);
+  $("resTop").textContent = busted ? "приняли на" : "сожрал";
+  $("resUnit").textContent = busted ? "килограммах" : "килограммов";
   const kg=Math.round(G.kg), gained=Math.round((kg-62)/12)+G.eaten+G.houses*3;
   S.coins+=gained; S.xp+=G.eaten*4;
   const rec=kg>S.best; if(rec) S.best=kg;
   missionProgress("kg",kg); missionProgress("combo",G.bestCombo); missionProgress("house",G.houses);
   save(); syncMenu();
-  $("resKg").textContent=kg; $("resRank").textContent=rankOf(kg);
+  $("resKg").textContent=kg;
+  $("resRank").textContent = busted ? "ППС приняли на месте 🚓" : rankOf(kg);
   $("resCnt").textContent=G.eaten; $("resHouse").textContent=G.houses;
   $("resCoin").textContent="+"+gained;
   $("resRec").style.visibility=rec?"visible":"hidden";
@@ -4638,23 +4775,59 @@ function endGame(){
   $("res").classList.add("on"); haptic("heavy");
 }
 function setWeight(){ $("wt").innerHTML=Math.round(G.kg)+"<small> кг</small>"; }
+function setStars(){
+  const s=G.stars+1;
+  $("stars").textContent="★".repeat(s)+"☆".repeat(5-s);
+  $("stars").classList.toggle("max", s>=5);
+}
+function setLives(){
+  let s="";
+  for(let i=0;i<(G.maxLives||5);i++) s += i<G.lives ? "❤" : "·";
+  $("lives").textContent=s;
+  $("lives").classList.toggle("low", G.lives<=2);
+}
+function hitPlayer(txt, kx, kz){
+  if(G.inv>0 || G.busted || mode!=="playing") return;
+  if(G.tier<=1){                                   // мелкого не топят: только отбрасывают
+    G.combo=0; G.mult=1; G.inv=2;
+    if(kx!==undefined){ const l=Math.hypot(kx,kz)||1; G.vx=kx/l*300; G.vz=kz/l*300; }
+    shake=Math.max(shake,16); hitFlash(); haptic("medium"); SFX.hit();
+    bigText("ОТОГНАЛИ 🚓", true);
+    return;
+  }
+  G.lives--;
+  const lost=G.kg*.14;
+  G.kg=Math.max(62,G.kg-lost); G.r=Math.max(R0,G.r*.86);
+  G.combo=0; G.mult=1; G.inv=3; G.calm=0;
+  if(kx!==undefined){ const l=Math.hypot(kx,kz)||1; G.vx=kx/l*320; G.vz=kz/l*320; }
+  shake=Math.max(shake,22); hitFlash(); haptic("heavy"); SFX.hit();
+  setLives(); setWeight(); updTier(true);
+  if(G.lives<=0){ bust(); return; }
+  bigText(txt+" −"+Math.round(lost)+" кг", true);
+}
+function bust(){                                   // взяли с поличным — досрочный конец
+  G.busted=true; G.inv=999; G.lives=0;
+  bigText("ТЕБЯ ПРИНЯЛИ 🚓", true);
+  shake=Math.max(shake,30); hitFlash(); SFX.hit();
+  setTimeout(()=>{ if(mode==="playing") endGame(); }, 900);
+}
 function updTier(force){
   const t=tierOf(G.r);
   if(t!==G.tier||force){
     if(t>G.tier&&!force){
       bigText("ЕМ "+TIERS[t].name.toUpperCase()+"!");
       SFX.gold(); haptic("heavy"); shake=Math.max(shake,14);
+      G.maxLives=Math.min(8,5+t); G.lives=Math.min(G.maxLives,G.lives+1); setLives();
     }
     G.tier=t;
     $("tierName").textContent=TIERS[t].name;
-    $("tierNow").textContent="ем: "+TIERS[t].eat;
   }
   const nx=TIERS[t+1];
   if(nx){
     const from=TIERS[t].r, p=clamp((G.r-from)/(nx.r-from),0,1);
     $("tierBar").style.width=(p*100)+"%";
-    $("tierNext").textContent="до «"+nx.name+"»: "+Math.max(1,Math.ceil((nx.r-G.r)*3))+" кг";
-  } else { $("tierBar").style.width="100%"; $("tierNext").textContent="максимум, жри всё"; }
+    $("tierNext").textContent="→ "+nx.name;
+  } else { $("tierBar").style.width="100%"; $("tierNext").textContent="жри всё"; }
 }
 
 /* ================== управление ================== */
@@ -4714,6 +4887,13 @@ function step(dt){
   body.scale.setScalar(G.r*(1+G.punch));
   body.visible=!(G.inv>0&&Math.sin(G.inv*30)>0);
   halo.scale.set(G.r*7,G.r*7,1);
+  if(skinRing.visible){
+    skinRing.scale.setScalar(G.r*1.22);
+    skinRing.rotation.z+=dt*1.5;
+  }
+  if(SKINS[S.skin].fire && Math.random()<dt*14){        // адский скин искрит на бегу
+    burst(player.position.x+rnd(-G.r,G.r), player.position.z+rnd(-G.r,G.r), 0xff5a00, 1, 40, G.r);
+  }
   G.punch=Math.max(0,G.punch-dt*2.6);
   const v=Math.hypot(G.vx,G.vz);
   G.spin+=dt*(0.9+v/G.r*1.5)*(G.chew>0?4:1);
@@ -4740,10 +4920,12 @@ function step(dt){
     if(dist>G.r+o.r+20) continue;
     if(dist<G.r+o.r*.55){
       if(o.tier<=G.tier||dashing) eatProp(o);
-      else {
-        const push=(G.r+o.r*.55-dist), l=dist||1;
-        player.position.x-=dx/l*push; player.position.z-=dz/l*push;
-        G.vx*=-.2; G.vz*=-.2;
+      else {                                   // не по зубам — выталкиваем и скользим вдоль, без дрожи
+        const l=dist||1, nx=dx/l, nz=dz/l;
+        const overlap=(G.r+o.r*.55)-dist;
+        player.position.x+=nx*overlap; player.position.z+=nz*overlap;
+        const vn=G.vx*nx+G.vz*nz;
+        if(vn<0){ G.vx-=vn*nx; G.vz-=vn*nz; }  // гасим только движение «в стену»
       }
     }
   }
@@ -4765,7 +4947,7 @@ function step(dt){
 
   let nearestCop=1e9;
   for(const c of cops){
-    if(!c.g.visible) continue;
+    if(!c.g.visible||G.busted) continue;
     const blink=Math.sin(performance.now()/110)>0;
     c.l1.material.color.setHex(blink?0xff3d6e:0x5a1220);
     c.l2.material.color.setHex(blink?0x14224a:0x2b6cff);
@@ -4796,19 +4978,135 @@ function step(dt){
         burst(c.x,c.z,0x2b6cff,16,180,20); SFX.car(); haptic("heavy");
         flash("🚓 сожрал ППСника"); missionProgress("cop",1,true); placeCop(c); setWeight();
       } else if(G.inv<=0){
-        const soft = G.tier<=1;                        // пока мелкий — только отталкивают
-        const lost = soft ? 0 : Math.max(8,G.kg*.1);
-        if(!soft){ G.kg=Math.max(30,G.kg-lost); G.r=Math.max(R0*.9,G.r*.95); }
-        G.combo=0; G.mult=1; c.stun=1.8; G.inv=2;
-        G.vx=-dx/l*300; G.vz=-dz/l*300;
-        shake=Math.max(shake,20); hitFlash(); haptic("heavy"); SFX.hit();
-        bigText(soft ? "ПОЙМАЛИ 🚓" : "−"+Math.round(lost)+" кг", true);
-        setWeight(); updTier(true);
+        c.stun=2; hitPlayer("ПОЙМАЛИ!", -dx, -dz);
+        if(G.busted) return;
       }
     }
   }
   SFX.sirenLevel(nearestCop<700?(1-nearestCop/700)*(.4+G.tier*.2):0);
 
+  /* ---------- уровень розыска ---------- */
+  const st=starsOf(G.kg);
+  if(st>G.stars){
+    G.stars=st;
+    const w=WANTED[st];
+    bigText("★".repeat(st+1)+" "+w.name);
+    flash("🚨 розыск "+(st+1)+"★ — "+w.hint);
+    SFX.gold(); shake=Math.max(shake,16); setStars();
+    if(st>=1 && cops.filter(c=>c.g.visible).length<G.zone.cops+2)
+      placeCop(cops.find(c=>!c.g.visible)||newCop());
+    if(st>=2 && !heli.alive){ heli.alive=true; heli.g.visible=true; heli.ang=0; heli.cd=3; }
+    if(st>=3 && !tank.alive){
+      tank.alive=true; tank.g.visible=true; tank.cd=3;
+      tank.x=clamp(px+rnd(-500,500),40,W-40); tank.z=clamp(pz+rnd(-500,500),40,H-40);
+      tank.g.position.set(tank.x,0,tank.z);
+    }
+    if(st>=4 && !ufo.alive){ ufo.alive=true; ufo.g.visible=true; ufo.cd=3; ufo.x=px; ufo.z=pz; }
+  }
+
+  /* вертолёт: кружит и сбрасывает мешки */
+  if(heli.alive){
+    heli.ang+=dt*.62;
+    const R=190;
+    heli.x+=((px+Math.cos(heli.ang)*R)-heli.x)*Math.min(1,dt*1.5);
+    heli.z+=((pz+Math.sin(heli.ang)*R)-heli.z)*Math.min(1,dt*1.5);
+    heli.g.position.set(heli.x,150,heli.z);
+    heli.g.rotation.y=-heli.ang+Math.PI/2;
+    heli.rotor.rotation.y+=dt*26;
+    heli.tailRotor.rotation.x+=dt*30;
+    heli.cd-=dt;
+    if(heli.cd<=0 && G.atkCd<=0){ heli.cd=4.2; G.atkCd=2.2; newBomb(px+G.vx*.35, pz+G.vz*.35, 1.25); SFX.tick(); }
+  }
+  for(let i=bombs.length-1;i>=0;i--){
+    const b=bombs[i]; b.t-=dt;
+    b.ring.scale.setScalar(.6+ (1.3-b.t)*.5);
+    b.ring.material.opacity=.4+Math.abs(Math.sin(b.t*14))*.45;
+    if(b.t<=0){
+      burst(b.x,b.z,b.laser?0x8affd6:0xff3d6e,14,180,14); SFX.crush(); shake=Math.max(shake,14);
+      if(Math.hypot(px-b.x,pz-b.z) < 44+G.r*.14)
+        hitPlayer(b.laser?"ЛУЧ НЛО!":"МЕШОК СВЕРХУ!", px-b.x, pz-b.z);
+      scene.remove(b.ring); bombs.splice(i,1);
+    }
+  }
+
+  /* танк: едет и стреляет */
+  if(tank.alive){
+    const dx=px-tank.x, dz=pz-tank.z, l=Math.hypot(dx,dz)||1;
+    if(l>210){
+      tank.vx+=((dx/l*92)-tank.vx)*Math.min(1,dt*1.4);
+      tank.vz+=((dz/l*92)-tank.vz)*Math.min(1,dt*1.4);
+    } else { tank.vx*=.9; tank.vz*=.9; }
+    tank.x=clamp(tank.x+tank.vx*dt,30,W-30); tank.z=clamp(tank.z+tank.vz*dt,30,H-30);
+    tank.g.position.set(tank.x,0,tank.z);
+    tank.g.rotation.y=Math.atan2(tank.vx,tank.vz)-Math.PI/2;
+    tank.turret.rotation.y=Math.atan2(dz,dx)-tank.g.rotation.y;
+    tank.cd-=dt;
+    if(tank.cd<=0 && l<620 && G.atkCd<=0){ tank.cd=4; G.atkCd=2.2; newShell(tank.x,tank.z,px+G.vx*.3,pz+G.vz*.3); SFX.hit(); }
+    if(l < G.r+26){
+      if(G.r>95){ G.kg+=180*G.app; G.eaten++; shake=Math.max(shake,20); burst(tank.x,tank.z,0x5d6b4a,18,200,20);
+        SFX.crush(); flash("🪖 СОЖРАЛ ТАНК"); tank.alive=false; tank.g.visible=false; setWeight(); }
+      else hitPlayer("ТАНК ПРОТАРАНИЛ!", -dx, -dz);
+      if(G.busted) return;
+    }
+  }
+  for(let i=shells.length-1;i>=0;i--){
+    const s=shells[i]; s.life-=dt;
+    s.m.position.x+=s.vx*dt; s.m.position.z+=s.vz*dt;
+    if(Math.hypot(px-s.m.position.x,pz-s.m.position.z) < G.r*.7+8){
+      burst(s.m.position.x,s.m.position.z,0xffb100,10,150,16);
+      hitPlayer("СНАРЯД!", px-s.m.position.x, pz-s.m.position.z);
+      scene.remove(s.m); shells.splice(i,1);
+      if(G.busted) return;
+      continue;
+    }
+    if(s.life<=0){ scene.remove(s.m); shells.splice(i,1); }
+  }
+
+  /* метеоритный дождь — когда за тобой уже вся галактика */
+  if(G.stars>=4){
+    G.meteorT-=dt;
+    if(G.meteorT<=0){
+      G.meteorT=11;
+      const n=3+((Math.random()*3)|0);
+      for(let i=0;i<n;i++) newMeteor(px+rnd(-320,320), pz+rnd(-320,320));
+      flash("☄️ МЕТЕОРИТЫ!"); SFX.tick();
+    }
+  }
+  for(let i=meteors.length-1;i>=0;i--){
+    const mt=meteors[i]; mt.t-=dt;
+    mt.m.position.y = Math.max(10, 620*(mt.t/1.6)*(mt.t/1.6));
+    mt.m.rotation.x+=dt*5; mt.m.rotation.z+=dt*4;
+    mt.ring.material.opacity=.35+Math.abs(Math.sin(mt.t*12))*.5;
+    mt.ring.scale.setScalar(.7+(1.6-mt.t)*.35);
+    if(mt.t<=0){
+      burst(mt.x,mt.z,0xff6a00,18,220,16); SFX.crush(); shake=Math.max(shake,20);
+      for(const o of props){                       // метеорит сносит всё вокруг
+        if(!o.alive||o.suck>0) continue;
+        if(Math.hypot(o.x-mt.x,o.z-mt.z)<74){ o.suck=.01; }
+      }
+      if(Math.hypot(px-mt.x,pz-mt.z) < 60+G.r*.15) hitPlayer("МЕТЕОРИТ!", px-mt.x, pz-mt.z);
+      scene.remove(mt.m); scene.remove(mt.ring); meteors.splice(i,1);
+      if(G.busted) return;
+    }
+  }
+
+  /* НЛО: висит сверху, тянет лучом и бьёт */
+  if(ufo.alive){
+    ufo.x+=(px-ufo.x)*Math.min(1,dt*1.1);
+    ufo.z+=(pz-ufo.z)*Math.min(1,dt*1.1);
+    ufo.g.position.set(ufo.x,132,ufo.z);
+    ufo.g.rotation.y+=dt*1.2;
+    const near=Math.hypot(px-ufo.x,pz-ufo.z)<70;
+    ufo.beam.material.opacity=near?.3:.14;
+    if(near){ G.vx*=.985; G.vz*=.985; }              // луч тормозит
+    ufo.cd-=dt;
+    if(ufo.cd<=0 && G.atkCd<=0){ ufo.cd=5.6; G.atkCd=2.2; newBomb(px+G.vx*.4, pz+G.vz*.4, 1.1, true); }
+    if(G.busted) return;
+  }
+
+  G.atkCd=Math.max(0,G.atkCd-dt);
+  G.calm+=dt;                                    // не били 18 секунд — сердце возвращается
+  if(G.calm>18 && G.lives<(G.maxLives||5)){ G.calm=0; G.lives++; setLives(); flash("❤ восстановил сердце"); }
   G.copT-=dt;
   if(G.copT<=0&&cops.filter(c=>c.g.visible).length<G.zone.cops+3){
     G.copT=32; placeCop(cops.find(c=>!c.g.visible)||newCop());
@@ -4852,7 +5150,7 @@ function eatProp(o){
   G.mult=clamp(1+G.combo*.13,1,6);
   if(G.mult>G.bestCombo) G.bestCombo=G.mult;
   G.kg+=o.kg*G.app*G.mult*(G.rush?2:1); G.eaten++;
-  G.r=Math.min(105, Math.sqrt(G.r*G.r+o.area*(1+S.up.appetite*.06)));
+  G.r=Math.min(135, Math.sqrt(G.r*G.r+o.area*(1+S.up.appetite*.06)));
   G.chew=.4; G.punch=Math.min(.22,.06+o.area/4000);
   if(o.tier>=2){ G.houses++; shake=Math.max(shake,16); SFX.crush(); burst(o.x,o.z,0xd9cdb8,16,190,26); }
   else if(o.tier===1){ SFX.car(); burst(o.x,o.z,0xbfd0e0,10,140,16); }
@@ -4868,7 +5166,7 @@ function eatSpot(o){
   if(G.mult>G.bestCombo) G.bestCombo=G.mult;
   const gain=o.kind.kg*G.app*G.mult*(G.rush?2:1);
   G.kg+=gain; G.eaten++;
-  G.r=Math.min(105, Math.sqrt(G.r*G.r+o.kind.area*(1+S.up.appetite*.06)));
+  G.r=Math.min(135, Math.sqrt(G.r*G.r+o.kind.area*(1+S.up.appetite*.06)));
   G.chew=.45; G.punch=.14;
   burst(o.x,o.z,o.kind.col,o.gold?22:12,o.gold?200:120,26);
   SFX.eat(G.combo); haptic("light");
@@ -4894,9 +5192,9 @@ function flash(text){
   clearTimeout(toastT); toastT=setTimeout(()=>t.style.display="none",1500);
 }
 function drawMini(){
-  const k=78/Math.max(W,H);
-  mctx.clearRect(0,0,78,78);
-  mctx.fillStyle="#1b13300f"; mctx.fillRect(0,0,78,78);
+  const k=64/Math.max(W,H);
+  mctx.clearRect(0,0,64,64);
+  mctx.fillStyle="#1b13300f"; mctx.fillRect(0,0,64,64);
   mctx.fillStyle="#00b05577";
   for(const o of props){ if(o.alive&&o.suck<=0&&o.tier<=G.tier) mctx.fillRect(o.x*k-1,o.z*k-1,2,2); }
   for(const o of spots){
@@ -4948,7 +5246,7 @@ function syncMenu(){
   $("misHint").textContent=done+"/"+(S.mis?S.mis.length:3);
   $("misDot").style.display=(S.mis&&done<S.mis.length)?"block":"none";
   $("shopHint").textContent=ZONES[S.zone].name+" · "+SKINS[S.skin].name;
-  halo.material.color.setHex(SKINS[S.skin].glow);
+  applySkin();
 }
 function openSheet(kind){
   const b=$("shBody"); let h="";
@@ -4975,7 +5273,7 @@ function openSheet(kind){
     SKINS.forEach((s,i)=>{
       const own=S.owned.includes(i), on=S.skin===i;
       h+='<div class="item '+(own?'':'locked')+'"><div class="ic">'+s.ic+'</div><div class="txt"><b>'+s.name+'</b>'+
-         '<span>'+(own?(on?'надет':'куплен'):('стоит '+s.cost+' 🪙'))+'</span></div>'+
+         '<span>'+(s.desc||'')+(own?(on?' · надет':' · куплен'):' · '+s.cost+' 🪙')+'</span></div>'+
          '<button class="buy '+(on?'owned':'')+'" data-skin="'+i+'" '+(((!own&&S.coins<s.cost)||on)?'disabled':'')+'>'+
          (on?'надет':own?'надеть':s.cost+' 🪙')+'</button></div>';
     });
@@ -5012,9 +5310,20 @@ $("misBtn").onclick=()=>openSheet("mis");
 $("playBtn").onclick=startGame;
 $("againBtn").onclick=startGame;
 $("menuBtn").onclick=()=>{ mode="menu"; $("res").classList.remove("on"); $("menu").classList.add("on"); };
+const SHARE_URL="https://t.me/tural_cyborg_bot/game";
 $("shareBtn").onclick=()=>{
-  const txt="Сожрал "+$("resKg").textContent+" кг за 100 секунд — "+$("resRank").textContent+". Догони 😤";
-  const url="https://t.me/share/url?url="+encodeURIComponent(location.href)+"&text="+encodeURIComponent(txt);
+  const kg=+$("resKg").textContent||0;
+  const stars=(G?G.stars:0)+1;
+  const filled=clamp(Math.round(kg/1500),0,10);
+  const bar="▰".repeat(filled)+"▱".repeat(10-filled);
+  const txt=
+    "🍔 ГОЛОДНЫЙ — сожрал район\n"+
+    bar+"\n"+
+    "⚖️ "+kg+" кг · "+$("resRank").textContent+"\n"+
+    "🏚 домов снёс: "+$("resHouse").textContent+"\n"+
+    "🚨 розыск: "+"★".repeat(stars)+"☆".repeat(5-stars)+"\n\n"+
+    "Догони, если не слабо 😤";
+  const url="https://t.me/share/url?url="+encodeURIComponent(SHARE_URL)+"&text="+encodeURIComponent(txt);
   if(TG&&TG.openTelegramLink) TG.openTelegramLink(url); else window.open(url,"_blank");
 };
 $("muteBtn").onclick=()=>{
@@ -5030,6 +5339,7 @@ function menuCam(){
   cam.lookAt(cx,40,cz);
   player.position.set(cx,42,cz+120);
   body.scale.setScalar(42); halo.scale.set(294,294,1); body.visible=true;
+  if(skinRing.visible){ skinRing.scale.setScalar(51); skinRing.rotation.z+=.012; }
   body.rotation.y=Math.sin(menuAngle*2.2)*.42;
   body.rotation.x=Math.sin(menuAngle*1.7)*.07;
   if(!LOWSPEC){ sun.position.set(cx-420,700,cz+340); sun.target.position.set(cx,0,cz); sun.target.updateMatrixWorld(); }
