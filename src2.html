@@ -24,6 +24,12 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
 .screen{position:fixed;inset:0;z-index:5;display:none;flex-direction:column}
 .screen.on{display:flex}
 
+#intro{position:fixed;inset:0;z-index:40;background:#07080d;transition:opacity .35s}
+#intro video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#07080d}
+#skip{position:fixed;right:14px;top:calc(env(safe-area-inset-top) + 14px);z-index:45;border:0;
+  background:#1b1330d9;color:#fff;font-family:var(--body);font-weight:700;font-size:15px;
+  padding:13px 20px;border-radius:999px;box-shadow:0 5px 0 #00000033;backdrop-filter:blur(6px)}
+#skip:active{transform:translateY(2px);box-shadow:0 3px 0 #00000022}
 #load{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:18px;background:linear-gradient(170deg,#8fd4ff,#d8f3ff 55%,#ffe9a8)}
 #load .ttl{font-family:var(--disp);font-weight:900;font-size:clamp(30px,10vw,54px);text-transform:uppercase;
@@ -178,6 +184,11 @@ canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
 
 <canvas id="gl"></canvas>
 <div id="flashfx"></div><div id="rush"></div>
+
+<div id="intro">
+  <video id="introVid" src="assets/video/intro.mp4" muted playsinline preload="auto" disablepictureinpicture></video>
+  <button id="skip">Пропустить ▸</button>
+</div>
 
 <div id="load">
   <div class="face"><img id="loadFace" alt=""></div>
@@ -1542,6 +1553,34 @@ function resize(){
 }
 addEventListener("resize",resize); resize();
 
+/* ---------- вступительный ролик ---------- */
+let introDone=false, assetsReady=false;
+function showMenu(){
+  if(!introDone || !assetsReady) return;
+  $("load").style.display="none";
+  $("menu").classList.add("on");
+}
+function endIntro(){
+  if(introDone) return;
+  introDone=true;
+  const v=$("introVid");
+  try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){}
+  const box=$("intro");
+  box.style.opacity=0;
+  setTimeout(()=>{ box.style.display="none"; }, 360);
+  showMenu();
+}
+$("skip").onclick=endIntro;
+(function playIntro(){
+  const v=$("introVid");
+  v.addEventListener("ended", endIntro);
+  v.addEventListener("error", endIntro);
+  const p=v.play();
+  if(p && p.catch) p.catch(()=>{});               // автоплей заблокирован — просто ждём тапа/таймаута
+  setTimeout(()=>{ if(!introDone && (v.readyState<2 || v.paused)) endIntro(); }, 4500);
+  setTimeout(endIntro, 22000);                     // страховка, если ended не придёт
+})();
+
 checkDay(); syncMenu();
 paintSky(ZONES[S.zone].sky[0],ZONES[S.zone].sky[1]);
 loadAll(p=>{
@@ -1550,8 +1589,7 @@ loadAll(p=>{
 }).then(()=>{
   applyZone(ZONES[S.zone]);
   for(let i=0;i<26;i++) placeSpot(newSpot());
-  $("load").style.display="none";
-  $("menu").classList.add("on");
+  assetsReady=true; showMenu();
 });
 requestAnimationFrame(tick);
 </script>
