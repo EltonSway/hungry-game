@@ -4269,6 +4269,7 @@ const SFX = (()=>{
     gold(){ [660,880,1320].forEach((f,i)=>setTimeout(()=>tone(f,.16,"triangle",.14),i*70)); },
     buy(){ tone(720,.1,"triangle",.14,980); },
     tick(){ tone(1150,.05,"square",.07); },
+    burp(){ tone(140,.34,"sawtooth",.2,58); noise(.22,.14,420); },
     end(){ [880,660,440].forEach((f,i)=>setTimeout(()=>tone(f,.3,"triangle",.16),i*140)); }
   };
 })();
@@ -4556,14 +4557,14 @@ function buildWorld(z){
 }
 
 const FOODS = [
-  { key:"pizza",    name:"Додо",             col:0xff6a00, kg:16, area:240 },
-  { key:"burger",   name:"Вкусно — и точка", col:0x00b055, kg:14, area:210 },
-  { key:"plov",     name:"Чайхона №1",       col:0xe8a33d, kg:20, area:280 },
-  { key:"taco",     name:"Шаурмичка 24/7",   col:0xc23b22, kg:18, area:260 },
-  { key:"samsa",    name:"Самса у дороги",   col:0xd6a44a, kg:15, area:220 },
-  { key:"shashlik", name:"Шашлычка",         col:0x8b4a2f, kg:17, area:250 },
-  { key:"fries",    name:"Картошка фри",     col:0xffd60a, kg:12, area:180 },
-  { key:"soda",     name:"Газировка",        col:0x3aa8ff, kg:10, area:160 },
+  { key:"pizza",    name:"Додо",             col:0xff6a00, kg:16, area:240, emo:"🍕" },
+  { key:"burger",   name:"Вкусно — и точка", col:0x00b055, kg:14, area:210, emo:"🍔" },
+  { key:"plov",     name:"Чайхона №1",       col:0xe8a33d, kg:20, area:280, emo:"🥘" },
+  { key:"taco",     name:"Шаурмичка 24/7",   col:0xc23b22, kg:18, area:260, emo:"🌯" },
+  { key:"samsa",    name:"Самса у дороги",   col:0xd6a44a, kg:15, area:220, emo:"🥟" },
+  { key:"shashlik", name:"Шашлычка",         col:0x8b4a2f, kg:17, area:250, emo:"🍢" },
+  { key:"fries",    name:"Картошка фри",     col:0xffd60a, kg:12, area:180, emo:"🍟" },
+  { key:"soda",     name:"Газировка",        col:0x3aa8ff, kg:10, area:160, emo:"🥤" },
 ];
 function newSpot(){
   const g=new THREE.Group();
@@ -4696,6 +4697,30 @@ function newShell(x,z,tx,tz){
   shells.push({ m, vx:(tx-x)/l*300, vz:(tz-z)/l*300, life:3 });
 }
 
+/* спрайты-эмодзи */
+const spriteCache={};
+function emoSprite(emo,size){
+  if(!spriteCache[emo]) spriteCache[emo]=cvTex(128,128,g=>{
+    g.font="98px serif"; g.textAlign="center"; g.textBaseline="middle"; g.fillText(emo,64,70);
+  });
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({ map:spriteCache[emo], transparent:true, depthWrite:false }));
+  s.scale.set(size,size,1); return s;
+}
+
+/* вылетающие эмодзи после укуса */
+const pops=[];
+function popEmo(emo,x,z,y){
+  let s=pops.find(p=>p.life<=0);
+  if(!s){
+    if(pops.length>=14) return;
+    s={ sp:null, life:0 };
+    pops.push(s);
+  }
+  if(s.sp) scene.remove(s.sp);
+  s.sp=emoSprite(emo,34); s.sp.position.set(x,y||30,z); scene.add(s.sp);
+  s.life=1; s.vy=95; s.vx=rnd(-26,26); s.vz=rnd(-26,26);
+}
+
 const bits=[];
 for(let i=0;i<90;i++){
   const m=new THREE.Mesh(new THREE.BoxGeometry(5,5,5), new THREE.MeshLambertMaterial({ color:0xffffff }));
@@ -4722,7 +4747,7 @@ function startGame(){
   G={ r:R0, kg:62, eaten:0, houses:0, t:ROUND, combo:0, comboT:0, bestCombo:1, mult:1,
       vx:0, vz:0, spd:1+S.up.speed*.11, app:(1+S.up.appetite*.25)*z.mult, over:false,
       camD:1, spin:0, chew:0, dash:0, dashCd:0, goldT:20, copT:32, inv:0, punch:0, tier:0,
-      zone:z, rush:false, lives:5, maxLives:5, busted:false, stars:0, calm:0, atkCd:0, meteorT:8 };
+      zone:z, rush:false, lives:5, maxLives:5, busted:false, stars:0, calm:0, atkCd:0, meteorT:8, squash:0, burp:0 };
   player.position.set(W/2,R0,H/2);
   applySkin();
   for(const o of spots){ o.alive=false; o.g.visible=false; }
@@ -4884,7 +4909,9 @@ function step(dt){
   player.position.z=clamp(player.position.z+G.vz*dt,G.r,H-G.r);
   G.dash=Math.max(0,G.dash-dt); G.dashCd=Math.max(0,G.dashCd-dt); G.inv=Math.max(0,G.inv-dt);
 
-  body.scale.setScalar(G.r*(1+G.punch));
+  const sq=G.squash;                                    // смешно чавкает: сплющился и обратно
+  body.scale.set(G.r*(1+G.punch+sq*.5), G.r*(1+G.punch-sq*.6), G.r*(1+G.punch+sq*.5));
+  G.squash += (0-G.squash)*Math.min(1,dt*7);
   body.visible=!(G.inv>0&&Math.sin(G.inv*30)>0);
   halo.scale.set(G.r*7,G.r*7,1);
   if(skinRing.visible){
@@ -5152,9 +5179,11 @@ function eatProp(o){
   G.kg+=o.kg*G.app*G.mult*(G.rush?2:1); G.eaten++;
   G.r=Math.min(135, Math.sqrt(G.r*G.r+o.area*(1+S.up.appetite*.06)));
   G.chew=.4; G.punch=Math.min(.22,.06+o.area/4000);
-  if(o.tier>=2){ G.houses++; shake=Math.max(shake,16); SFX.crush(); burst(o.x,o.z,0xd9cdb8,16,190,26); }
-  else if(o.tier===1){ SFX.car(); burst(o.x,o.z,0xbfd0e0,10,140,16); }
-  else { SFX.eat(G.combo); burst(o.x,o.z,0x8fd06a,7,110,12); }
+  G.squash=o.tier>=2?.5:.3; belch();
+  if(o.tier>=2){ G.houses++; shake=Math.max(shake,16); SFX.crush(); burst(o.x,o.z,0xd9cdb8,16,190,26);
+    popEmo("🏠",o.x,o.z,40); }
+  else if(o.tier===1){ SFX.car(); burst(o.x,o.z,0xbfd0e0,10,140,16); popEmo("🚗",o.x,o.z,30); }
+  else { SFX.eat(G.combo); burst(o.x,o.z,0x8fd06a,7,110,12); popEmo("🌳",o.x,o.z,26); }
   haptic(o.tier>=2?"heavy":"light");
   setWeight(); updTier();
   if(G.combo>=3) bigText((G.combo%3===0)?pick(MEMES):"x"+G.mult.toFixed(1));
@@ -5169,6 +5198,8 @@ function eatSpot(o){
   G.r=Math.min(135, Math.sqrt(G.r*G.r+o.kind.area*(1+S.up.appetite*.06)));
   G.chew=.45; G.punch=.14;
   burst(o.x,o.z,o.kind.col,o.gold?22:12,o.gold?200:120,26);
+  popEmo(o.gold?"🏆":(o.kind.emo||"🍕"), o.x, o.z, 34);
+  G.squash=.34; belch();
   SFX.eat(G.combo); haptic("light");
   setWeight(); updTier();
   if(o.gold){ shake=Math.max(shake,18); bigText("🏆 +"+Math.round(gain)+" КГ"); SFX.gold(); missionProgress("gold",1,true); }
@@ -5180,6 +5211,13 @@ function eatSpot(o){
 }
 
 /* ================== эффекты ================== */
+function belch(){                                       // каждые несколько укусов — смачное «буэ»
+  if(++G.burp < 6) return;
+  G.burp=0; G.squash=.6;
+  popEmo("💨", player.position.x, player.position.z+G.r*.7, G.r*1.1);
+  bigText(pick(["БУРП! 🤢","ЫЫЫХ 😮‍💨","УФФ… 😵","ХОРОШО ПОШЛО 😋"]));
+  SFX.burp(); haptic("medium"); shake=Math.max(shake,7);
+}
 function bigText(txt,bad){
   const c=$("combo"); c.textContent=txt; c.classList.toggle("bad",!!bad);
   c.classList.toggle("small", txt.length>13);
@@ -5347,6 +5385,15 @@ function menuCam(){
 function tick(now){
   const dt=Math.min(.05,(now-last)/1000); last=now;
   if(mode==="playing") step(dt); else { menuAngle+=dt*.06; menuCam(); }
+  for(const s of pops){
+    if(s.life<=0) continue;
+    s.life-=dt*1.5; s.vy-=90*dt;
+    s.sp.position.x+=s.vx*dt; s.sp.position.y+=s.vy*dt; s.sp.position.z+=s.vz*dt;
+    const k=Math.max(.01,s.life);
+    s.sp.scale.set(34*k,34*k,1);
+    s.sp.material.opacity=k;
+    if(s.life<=0){ scene.remove(s.sp); s.sp=null; }
+  }
   for(const b of bits){
     if(b.life<=0) continue;
     b.vy-=430*dt; b.life-=dt*1.25;
